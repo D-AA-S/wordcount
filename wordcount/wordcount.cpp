@@ -1,6 +1,24 @@
 #include <iostream>
+#include <string>
 
-int main()
+void* progress_monitor(void*)
 {
-    std::cout << "Hello World!\n";
+
 }
+
+long wordcount(std::string fileName)
+{
+
+}
+
+int main(int argc, char** argv)
+{
+
+}
+
+
+typedef struct 
+{ long* CurrentStatus,
+longInitialValue,
+longTerminationValue; 
+} PROGRESS_STATUS;
