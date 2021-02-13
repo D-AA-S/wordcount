@@ -10,11 +10,9 @@
 
 long wordcount(const char* fileName)
 {
-    long ah = 1; 
     std::ifstream check (fileName, std::ifstream::in);
-    if (!check.is_open()) { std::cout << "shit" << std::endl; }
-    else { std::cout << "pog" << std::endl; }
-    return ah; 
+    if (!check.is_open()) { return 0; }
+    else { return 1; }
 }
 
 int main(int argc, char** argv)
