@@ -25,6 +25,13 @@ void* progress_monitor(void* progressStatus)    // Should expect void * argument
     long CurrentStatus = *progStat->CurrentStatus;
     long InitialValue = progStat->InitialValue;
     long TerminationValue = progStat->TerminationValue;
+
+    /*
+        TODO: 
+        Need to compute the percentage of the task that has been completed and add to a progress bar of 50 characters representing the amount of progress that has been made.
+        Print new marker characters without a line feed character (use cout.flush()).
+        When the progress indicator has reached the termination value, the thread will print a linefeed and exit the thread.
+    */
 }
 
 long wordcount(const char* fileName)
@@ -35,14 +42,27 @@ long wordcount(const char* fileName)
     else
         return 1;
 
+    long numberOfWords = 0;     // Start with 0 words in the file and increment as we go
     long CurrentStatus = 0;     // Random test values
     long TerminationValue = 50; // Random test values
     
+    /*
+        TODO: Need to determine the number of bytes in the file so we can set the TerminationValue appropriately
+    */
+
     // CurrentStatus: A pointer to a long used by wordcount to store the number of bytes processed so far.
     // TerminationValue: Number of bytes in file.
     PROGRESS_STATUS progressStatus(&CurrentStatus, TerminationValue); 
     pthread_t pmThread;     // Progress_monitor thread
     pthread_create(&pmThread, NULL, progress_monitor, &progressStatus);    //int pthread_create(pthread_t *thread, const pthread_attr_t *attr, void* (*start_routine)(void*), void* arg);
+
+    /*
+        TODO:  Need to read one character a time, updating the number of bytes processed and counting the number of words in the file. 
+        We will define a word as a non-zero length sequence of non whitespace characters (whitespace characters are tab, space, 
+        linefeed, newline, etc.).
+    */
+
+    return numberOfWords;
 }
 
 int main(int argc, char** argv)
