@@ -20,7 +20,11 @@ struct PROGRESS_STATUS
 
 void* progress_monitor(void* progressStatus)    // Should expect void * argument to be a pointer to the PROGRESS_STATUS structure
 {
-    struct PROGRESS_STATUS *progressStatus = (struct PROGRESS_STATUS*) progressStatus;
+    struct PROGRESS_STATUS *progStat = (struct PROGRESS_STATUS*) progressStatus;
+    
+    long CurrentStatus = *progStat->CurrentStatus;
+    long InitialValue = progStat->InitialValue;
+    long TerminationValue = progStat->TerminationValue;
 }
 
 long wordcount(const char* fileName)
@@ -31,8 +35,8 @@ long wordcount(const char* fileName)
     else
         return 1;
 
-    long CurrentStatus;    
-    long TerminationValue;
+    long CurrentStatus = 0;    
+    long TerminationValue = 50;
     
     // CurrentStatus: A pointer to a long used by wordcount to store the number of bytes processed so far.
     // TerminationValue: Number of bytes in file.
