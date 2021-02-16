@@ -32,20 +32,23 @@ void* progress_monitor(void* progressStatus)    // Should expect void * argument
         Print new marker characters without a line feed character (use cout.flush()).
         When the progress indicator has reached the termination value, the thread will print a linefeed and exit the thread.
     */
+    return (void *)progressStatus;
 }
 
 long wordcount(const char* fileName)
 {
     std::ifstream check (fileName, std::ifstream::in);
     if (!check.is_open())
-        return 0;
-    else
-        return 1;
+        return -1;
 
+    check.seekg(0, check.end);
     long numberOfWords = 0;     // Start with 0 words in the file and increment as we go
     long CurrentStatus = 0;     // Random test values
-    long TerminationValue = 50; // Random test values
-    
+    long TerminationValue = check.tellg(); // Random test values
+    check.seekg(0, check.beg);
+
+    std::cout << TerminationValue << std::endl; 
+
     /*
         TODO: Need to determine the number of bytes in the file so we can set the TerminationValue appropriately
     */
