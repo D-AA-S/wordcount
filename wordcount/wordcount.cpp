@@ -35,8 +35,8 @@ long wordcount(const char* fileName)
     else
         return 1;
 
-    long CurrentStatus = 0;    
-    long TerminationValue = 50;
+    long CurrentStatus = 0;     // Random test values
+    long TerminationValue = 50; // Random test values
     
     // CurrentStatus: A pointer to a long used by wordcount to store the number of bytes processed so far.
     // TerminationValue: Number of bytes in file.
