@@ -22,19 +22,22 @@ void* progress_monitor(void* progressStatus)    // Should expect void * argument
 {
     struct PROGRESS_STATUS *progStat = (struct PROGRESS_STATUS*) progressStatus;
     static long percentcheck = 1 / 50;
+
     long CurrentStatus = *progStat->CurrentStatus;
     long InitialValue = progStat->InitialValue;
     long TerminationValue = progStat->TerminationValue;
-    long currStat = CurrentStatus / TerminationValue;
-    long prevstat = 0;
+
+    long currStat = CurrentStatus / TerminationValue; //stores the current percentage of bytes processed
+    long prevstat = 0; //Stores the previous currStat when it was > percentcheck
+    std::string bar = "---------+---------+---------+---------+---------+";
     while (InitialValue != TerminationValue) 
     {
         if (currStat - prevstat >= percentcheck)
         {
-
+            floor(currStat-prevstat); 
+            std::cout <<  << std::flush;
+            prevstat = currStat;
         }
-        std::cout.flush();
-        prevstat = currStat;
         currStat = CurrentStatus / TerminationValue;
     }
 
