@@ -21,10 +21,23 @@ struct PROGRESS_STATUS
 void* progress_monitor(void* progressStatus)    // Should expect void * argument to be a pointer to the PROGRESS_STATUS structure
 {
     struct PROGRESS_STATUS *progStat = (struct PROGRESS_STATUS*) progressStatus;
-    
+    static long percentcheck = 1 / 50;
     long CurrentStatus = *progStat->CurrentStatus;
     long InitialValue = progStat->InitialValue;
     long TerminationValue = progStat->TerminationValue;
+    long currStat = CurrentStatus / TerminationValue;
+    long prevstat = 0;
+    while (InitialValue != TerminationValue) 
+    {
+        if (currStat - prevstat >= percentcheck)
+        {
+
+        }
+        std::cout.flush();
+        prevstat = currStat;
+        currStat = CurrentStatus / TerminationValue;
+    }
+
 
     /*
         TODO: 
