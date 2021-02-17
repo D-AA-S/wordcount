@@ -53,31 +53,39 @@ void* progress_monitor(void* progressStatus)    // Should expect void * argument
 
 long wordcount(const char* fileName)
 {
-    std::ifstream check (fileName, std::ifstream::in);
+    std::ifstream check(fileName, std::ifstream::in);
     if (!check.is_open())
         return -1;
 
     check.seekg(0, check.end);
-    long numberOfWords = 0;     // Start with 0 words in the file and increment as we go
-    long CurrentStatus = 0;     // Random test values
-    long TerminationValue = check.tellg(); // Random test values
+    long wordCount = 0;     // Start with 0 words in the file and increment as we go
+    long CurrentStatus = 0;     // Current Status starts with 0
+    long TerminationValue = (long)check.tellg(); // Sets the termination value to the number of bytes in the file
     check.seekg(0, check.beg);
 
-    std::cout << TerminationValue << std::endl; 
-
-    /*
-        TODO: Need to determine the number of bytes in the file so we can set the TerminationValue appropriately
-    */
+    // Need to count the number of words in the file
+    // Probably going to start this all over....logic is not correct
+    bool isWhiteSpace = false;
+    char c;
+    while (check.get(c)) {
+        CurrentStatus++;    // incrementing the number of bytes we have read thus far
+        if (!isspace(c) && isWhiteSpace) {
+            isWhiteSpace = false;
+            wordCount++;
+        }
+        else if (isspace(c))
+            isWhiteSpace = true;
+    }
 
     // CurrentStatus: A pointer to a long used by wordcount to store the number of bytes processed so far.
     // TerminationValue: Number of bytes in file.
-    PROGRESS_STATUS progressStatus(&CurrentStatus, TerminationValue); 
+    PROGRESS_STATUS progressStatus(&CurrentStatus, TerminationValue);
     pthread_t pmThread;     // Progress_monitor thread
-    pthread_create(&pmThread, NULL, progress_monitor, &progressStatus);    //int pthread_create(pthread_t *thread, const pthread_attr_t *attr, void* (*start_routine)(void*), void* arg);
+    pthread_create(&pmThread, NULL, progress_monitor, &progressStatus);    // int pthread_create(pthread_t *thread, const pthread_attr_t *attr, void* (*start_routine)(void*), void* arg);
 
     /*
-        TODO:  Need to read one character a time, updating the number of bytes processed and counting the number of words in the file. 
-        We will define a word as a non-zero length sequence of non whitespace characters (whitespace characters are tab, space, 
+        TODO:  Need to read one character a time, updating the number of bytes processed and counting the number of words in the file.
+        We will define a word as a non-zero length sequence of non whitespace characters (whitespace characters are tab, space,
         linefeed, newline, etc.).
     */
 
