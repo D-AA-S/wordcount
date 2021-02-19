@@ -65,17 +65,6 @@ long wordcount(const char* fileName)
 
     // Need to count the number of words in the file
     // Probably going to start this all over....logic is not correct
-    bool isWhiteSpace = false;
-    char c;
-    while (check.get(c)) {
-        CurrentStatus++;    // incrementing the number of bytes we have read thus far
-        if (!isspace(c) && isWhiteSpace) {
-            isWhiteSpace = false;
-            wordCount++;
-        }
-        else if (isspace(c))
-            isWhiteSpace = true;
-    }
 
     // CurrentStatus: A pointer to a long used by wordcount to store the number of bytes processed so far.
     // TerminationValue: Number of bytes in file.
@@ -83,13 +72,20 @@ long wordcount(const char* fileName)
     pthread_t pmThread;     // Progress_monitor thread
     pthread_create(&pmThread, NULL, progress_monitor, &progressStatus);    // int pthread_create(pthread_t *thread, const pthread_attr_t *attr, void* (*start_routine)(void*), void* arg);
 
+    char c;
+    while (check.get(c)) {  // Reading one character at a time
+        CurrentStatus++;    // incrementing the number of bytes we have read thus far
+        if (!isspace(c))
+            wordCount++;
+    }
+
     /*
         TODO:  Need to read one character a time, updating the number of bytes processed and counting the number of words in the file.
         We will define a word as a non-zero length sequence of non whitespace characters (whitespace characters are tab, space,
         linefeed, newline, etc.).
     */
 
-    return numberOfWords;
+    return wordCount;
 }
 
 int main(int argc, char** argv)
