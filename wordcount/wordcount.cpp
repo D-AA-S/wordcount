@@ -34,9 +34,9 @@ void* progress_monitor(void* progressStatus)    // Should expect void * argument
     {
         if (currStat - prevstat >= percentcheck)
         {
-            floor(currStat); 
-            std::cout << bar.substr(prevstat-1, currStat-1) << std::flush;
-            prevstat = floor(currStat);
+            currStat = floor(currStat); 
+            std::cout << bar.substr(prevstat-1, (currStat-prevstat-1)) << std::flush;
+            prevstat = currStat+1;
         }
         currStat = (CurrentStatus / TerminationValue)/2;
     }
