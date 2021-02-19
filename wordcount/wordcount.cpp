@@ -21,13 +21,13 @@ struct PROGRESS_STATUS
 void* progress_monitor(void* progressStatus)    // Should expect void * argument to be a pointer to the PROGRESS_STATUS structure
 {
     struct PROGRESS_STATUS *progStat = (struct PROGRESS_STATUS*) progressStatus;
-    static long percentcheck = 1 / 50;
+    static long percentcheck = 2;
 
     long CurrentStatus = *progStat->CurrentStatus;
     long InitialValue = progStat->InitialValue;
     long TerminationValue = progStat->TerminationValue;
 
-    long currStat = (CurrentStatus / TerminationValue)/2; //stores the current percentage of bytes processed
+    long currStat = ((CurrentStatus / TerminationValue)*100)/2; //stores the current percentage of bytes processed
     long prevstat = 1; //Stores the previous currStat when it was > percentcheck
     std::string bar = "---------+---------+---------+---------+---------+";
     while (InitialValue != TerminationValue) 
@@ -38,7 +38,7 @@ void* progress_monitor(void* progressStatus)    // Should expect void * argument
             std::cout << bar.substr(prevstat-1, (currStat-prevstat-1)) << std::flush;
             prevstat = currStat+1;
         }
-        currStat = (CurrentStatus / TerminationValue)/2;
+        currStat = ((CurrentStatus / TerminationValue)*100)/2;
     }
 
 
