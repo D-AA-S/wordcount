@@ -41,14 +41,13 @@ void* progress_monitor(void* progressStatus)    // Should expect void * argument
         currStat = ((CurrentStatus / TerminationValue)*100)/2;
     }
 
-
     /*
         TODO: 
         Need to compute the percentage of the task that has been completed and add to a progress bar of 50 characters representing the amount of progress that has been made.
         Print new marker characters without a line feed character (use cout.flush()).
         When the progress indicator has reached the termination value, the thread will print a linefeed and exit the thread.
     */
-    return (void *)progressStatus;
+    return NULL;
 }
 
 long wordcount(const char* fileName)
@@ -84,7 +83,7 @@ long wordcount(const char* fileName)
         We will define a word as a non-zero length sequence of non whitespace characters (whitespace characters are tab, space,
         linefeed, newline, etc.).
     */
-
+    pthread_join(pmThread, NULL);
     return wordCount;
 }
 
