@@ -32,13 +32,14 @@ void* progress_monitor(void* progressStatus)    // Should expect void * argument
     int currStatus = 0;
     int prevStatus = 0;
     std::string bar = "---------+---------+---------+---------+---------+";
-    while (*CurrentStatus != TerminationValue)
+    while (*CurrentStatus <= TerminationValue && currStatus != PROG_BAR_SIZE)
     {
         currStatus = (((double)*CurrentStatus - (double)InitialValue) / (double)TerminationValue) * PROG_BAR_SIZE;      // stores the number of progress markers that need to be printed
         std::cout << bar.substr(prevStatus, (currStatus - prevStatus)) << std::flush;
         if (currStatus != prevStatus)
             prevStatus = currStatus;
     }
+    std::cout << std::endl;
 
     /*
         TODO:
@@ -71,9 +72,12 @@ long wordcount(const char* fileName)
     pthread_create(&pmThread, NULL, progress_monitor, (void *) &progressStatus);    // int pthread_create(pthread_t *thread, const pthread_attr_t *attr, void* (*start_routine)(void*), void* arg);
 
     char c;
+    bool isSpace = false;
     while (check.get(c)) {  // Reading one character at a time
         CurrentStatus++;    // incrementing the number of bytes we have read thus far
-        if (!isspace(c))
+        if (c == '\n')
+            CurrentStatus++;
+        if (isspace(c))
             wordCount++;
     }
 
@@ -97,7 +101,7 @@ int main(int argc, char** argv)
         std::cout << "Too many files provided. Please enter 1 file name." << std::endl;
         return -1;
     }
-    wordcount(argv[1]);
+    std::cout << "There are " << wordcount(argv[1]) << " words in " << argv[1] << "." << std::endl;
 }
 
 
