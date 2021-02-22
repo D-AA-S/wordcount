@@ -4,6 +4,8 @@
 #include <fstream> 
 #include <pthread.h>
 
+const int PROG_BAR_SIZE = 50;
+
 struct PROGRESS_STATUS
 {
     // We will refer to the long integer to which this variable dereferences as the progress indicator.
@@ -20,29 +22,26 @@ struct PROGRESS_STATUS
 
 void* progress_monitor(void* progressStatus)    // Should expect void * argument to be a pointer to the PROGRESS_STATUS structure
 {
-    struct PROGRESS_STATUS *progStat = (struct PROGRESS_STATUS*) progressStatus;
-    static long percentcheck = 2;
+    struct PROGRESS_STATUS* progStat = (struct PROGRESS_STATUS*)progressStatus;
+    //static long percentcheck = 1;
 
-    long CurrentStatus = *progStat->CurrentStatus;
+    long* CurrentStatus = progStat->CurrentStatus;
     long InitialValue = progStat->InitialValue;
     long TerminationValue = progStat->TerminationValue;
 
-    long currStat = ((CurrentStatus / TerminationValue)*100)/2; //stores the current percentage of bytes processed
-    long prevstat = 1; //Stores the previous currStat when it was > percentcheck
+    int currStatus = 0;
+    int prevStatus = 0;
     std::string bar = "---------+---------+---------+---------+---------+";
-    while (InitialValue != TerminationValue) 
+    while (*CurrentStatus != TerminationValue)
     {
-        if (currStat - prevstat >= percentcheck)
-        {
-            currStat = floor(currStat); 
-            std::cout << bar.substr(prevstat-1, (currStat-prevstat-1)) << std::flush;
-            prevstat = currStat+1;
-        }
-        currStat = ((CurrentStatus / TerminationValue)*100)/2;
+        currStatus = (((double)*CurrentStatus - (double)InitialValue) / (double)TerminationValue) * PROG_BAR_SIZE;      // stores the number of progress markers that need to be printed
+        std::cout << bar.substr(prevStatus, (currStatus - prevStatus)) << std::flush;
+        if (currStatus != prevStatus)
+            prevStatus = currStatus;
     }
 
     /*
-        TODO: 
+        TODO:
         Need to compute the percentage of the task that has been completed and add to a progress bar of 50 characters representing the amount of progress that has been made.
         Print new marker characters without a line feed character (use cout.flush()).
         When the progress indicator has reached the termination value, the thread will print a linefeed and exit the thread.
@@ -69,7 +68,7 @@ long wordcount(const char* fileName)
     // TerminationValue: Number of bytes in file.
     PROGRESS_STATUS progressStatus(&CurrentStatus, TerminationValue);
     pthread_t pmThread;     // Progress_monitor thread
-    pthread_create(&pmThread, NULL, progress_monitor, &progressStatus);    // int pthread_create(pthread_t *thread, const pthread_attr_t *attr, void* (*start_routine)(void*), void* arg);
+    pthread_create(&pmThread, NULL, progress_monitor, (void *) &progressStatus);    // int pthread_create(pthread_t *thread, const pthread_attr_t *attr, void* (*start_routine)(void*), void* arg);
 
     char c;
     while (check.get(c)) {  // Reading one character at a time
