@@ -72,13 +72,21 @@ long wordcount(const char* fileName)
     pthread_create(&pmThread, NULL, progress_monitor, (void *) &progressStatus);    // int pthread_create(pthread_t *thread, const pthread_attr_t *attr, void* (*start_routine)(void*), void* arg);
 
     char c;
-    bool isSpace = false;
+    int noDouble = 1;
     while (check.get(c)) {  // Reading one character at a time
         CurrentStatus++;    // incrementing the number of bytes we have read thus far
-        if (c == '\n')
-            CurrentStatus++;
-        if (isspace(c))
+        if (isspace(c)) {
             wordCount++;
+            noDouble++;
+            if (c == '\n') CurrentStatus++;
+        }
+        else if(noDouble >= 1)
+            noDouble--;
+        if (noDouble == 2) 
+        {
+            wordCount--;
+            noDouble--;
+        }
     }
 
     /*
