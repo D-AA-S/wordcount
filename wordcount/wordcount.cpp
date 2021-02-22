@@ -78,7 +78,7 @@ long wordcount(const char* fileName)
         if (isspace(c)) {
             wordCount++;
             noDouble++;
-            if (c == '\n') CurrentStatus++;
+            if (c == '\n') CurrentStatus++; // This is only here for windows get rid of it otherwise
         }
         else if(noDouble >= 1)
             noDouble--;
