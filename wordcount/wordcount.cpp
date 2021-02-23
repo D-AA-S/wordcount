@@ -1,3 +1,10 @@
+/*
+    wordcount.cpp: Reads a text file and determines how many words are in the file.
+
+    Daniel A. Silva Red ID: 820567716
+    Kathryn Shafer  Red ID: 821586552
+*/
+
 #include <iostream>
 #include <stdio.h>
 #include <string>
@@ -8,7 +15,6 @@ const int PROG_BAR_SIZE = 50;
 
 struct PROGRESS_STATUS
 {
-    // We will refer to the long integer to which this variable dereferences as the progress indicator.
     long* CurrentStatus;    // CurrentStatus is a pointer to a long which represents the current status of the computation being tracked.
     long InitialValue;      // InitialValue is the starting value for the computation.
     long TerminationValue;  // TerminationValue is the value at which the computation is complete.
@@ -20,10 +26,9 @@ struct PROGRESS_STATUS
     }
 };
 
-void* progress_monitor(void* progressStatus)    // Should expect void * argument to be a pointer to the PROGRESS_STATUS structure
+void* progress_monitor(void* progressStatus)
 {
-    struct PROGRESS_STATUS* progStat = (struct PROGRESS_STATUS*)progressStatus;
-    //static long percentcheck = 1;
+    struct PROGRESS_STATUS* progStat = (struct PROGRESS_STATUS*) progressStatus;
 
     long* CurrentStatus = progStat->CurrentStatus;
     long InitialValue = progStat->InitialValue;
@@ -34,19 +39,18 @@ void* progress_monitor(void* progressStatus)    // Should expect void * argument
     std::string bar = "---------+---------+---------+---------+---------+";
     while (*CurrentStatus <= TerminationValue && currStatus != PROG_BAR_SIZE)
     {
-        currStatus = (((double)*CurrentStatus - (double)InitialValue) / (double)TerminationValue) * PROG_BAR_SIZE;      // stores the number of progress markers that need to be printed
-        std::cout << bar.substr(prevStatus, (currStatus - prevStatus)) << std::flush;
-        if (currStatus != prevStatus)
-            prevStatus = currStatus;
+        currStatus = (((double)*CurrentStatus - (double)InitialValue) / (double)TerminationValue) * PROG_BAR_SIZE;      // currStatus contains the number of progress markers that should appear on the screen
+        std::cout << bar.substr(prevStatus, (currStatus - prevStatus)) << std::flush;   // Print a substring of the "bar" string, and progress the prevStatus counter to the last status marker that was printed
+        prevStatus = currStatus;
     }
-    std::cout << std::endl;
 
-    /*
-        TODO:
-        Need to compute the percentage of the task that has been completed and add to a progress bar of 50 characters representing the amount of progress that has been made.
-        Print new marker characters without a line feed character (use cout.flush()).
-        When the progress indicator has reached the termination value, the thread will print a linefeed and exit the thread.
-    */
+    // If we ever run into the strange situation where currentStatus exceeds the termination value but we haven't printed the entire progress bar yet, do this here
+    if (*CurrentStatus > TerminationValue && currStatus != PROG_BAR_SIZE) {
+        currStatus = PROG_BAR_SIZE;      // Set it equal to the progress bar size to print the rest of the progress bar
+        std::cout << bar.substr(prevStatus, (currStatus - prevStatus)) << std::flush;
+    }
+
+    std::cout << std::endl;
     return NULL;
 }
 
@@ -58,27 +62,21 @@ long wordcount(const char* fileName)
 
     check.seekg(0, check.end);
     long wordCount = 0;     // Start with 0 words in the file and increment as we go
-    long CurrentStatus = 0;     // Current Status starts with 0
-    long TerminationValue = (long)check.tellg(); // Sets the termination value to the number of bytes in the file
+    long CurrentStatus = 0;     // Current Status starts at 0 (start at the beginning of the file)
+    long TerminationValue = (long)check.tellg(); // Sets the termination value to the total number of bytes in the file
     check.seekg(0, check.beg);
 
-    // Need to count the number of words in the file
-    // Probably going to start this all over....logic is not correct
-
-    // CurrentStatus: A pointer to a long used by wordcount to store the number of bytes processed so far.
-    // TerminationValue: Number of bytes in file.
     PROGRESS_STATUS progressStatus(&CurrentStatus, TerminationValue);
     pthread_t pmThread;     // Progress_monitor thread
-    pthread_create(&pmThread, NULL, progress_monitor, (void *) &progressStatus);    // int pthread_create(pthread_t *thread, const pthread_attr_t *attr, void* (*start_routine)(void*), void* arg);
+    pthread_create(&pmThread, NULL, progress_monitor, (void *) &progressStatus);    // Creates the new thread pmThread which will use the progress_monitor function with the address of the progressStatus struct as the argument
 
     char c;
     int noDouble = 1;
     while (check.get(c)) {  // Reading one character at a time
-        CurrentStatus++;    // incrementing the number of bytes we have read thus far
+        CurrentStatus++;    // Incrementing the number of bytes we have read thus far
         if (isspace(c)) {
             wordCount++;
             noDouble++;
-            if (c == '\n') CurrentStatus++; // This is only here for windows get rid of it otherwise
         }
         else if(noDouble >= 1)
             noDouble--;
@@ -88,13 +86,7 @@ long wordcount(const char* fileName)
             noDouble--;
         }
     }
-
-    /*
-        TODO:  Need to read one character a time, updating the number of bytes processed and counting the number of words in the file.
-        We will define a word as a non-zero length sequence of non whitespace characters (whitespace characters are tab, space,
-        linefeed, newline, etc.).
-    */
-    pthread_join(pmThread, NULL);
+    pthread_join(pmThread, NULL);   // Main thread is finished but we need to wait for the progress_monitor thread to catch up
     return wordCount;
 }
 
@@ -111,5 +103,3 @@ int main(int argc, char** argv)
     }
     std::cout << "There are " << wordcount(argv[1]) << " words in " << argv[1] << "." << std::endl;
 }
-
-
