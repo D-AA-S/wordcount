@@ -92,6 +92,7 @@ long wordcount(const char* fileName)
 
 int main(int argc, char** argv)
 {
+    long wordAmount;
     if (argc < 2) {
         std::cout << "No file specified" << std::endl;
         return -1;
@@ -101,5 +102,6 @@ int main(int argc, char** argv)
         std::cout << "Too many files provided. Please enter 1 file name." << std::endl;
         return -1;
     }
-    std::cout << "There are " << wordcount(argv[1]) << " words in " << argv[1] << "." << std::endl;
+    wordAmount = wordcount(argv[1]);
+    std::cout << "There are " << wordAmount << " words in " << argv[1] << "." << std::endl;
 }
