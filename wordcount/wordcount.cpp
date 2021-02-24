@@ -86,7 +86,7 @@ long wordcount(const char* fileName)
             noDouble--;
         }
     }
-    if (noDouble == 0)
+    if (noDouble == 0) //if there are no whitespaces at the end of the file, then we need to add a word, since words are added via a whitespace
         wordCount++;
     pthread_join(pmThread, NULL);   // Main thread is finished but we need to wait for the progress_monitor thread to catch up
     return wordCount;
