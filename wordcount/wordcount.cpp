@@ -103,5 +103,5 @@ int main(int argc, char** argv)
         return -1;
     }
     wordAmount = wordcount(argv[1]);
-    std::cout << "There are " << wordAmount << " words in " << argv[1] << "." << std::endl;
+    std::cout << "There are " << wordAmount << " words in " << argv[1] << std::endl;
 }
