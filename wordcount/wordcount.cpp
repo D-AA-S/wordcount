@@ -86,6 +86,8 @@ long wordcount(const char* fileName)
             noDouble--;
         }
     }
+    if (noDouble == 0)
+        wordCount++;
     pthread_join(pmThread, NULL);   // Main thread is finished but we need to wait for the progress_monitor thread to catch up
     return wordCount;
 }
