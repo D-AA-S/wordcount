@@ -71,16 +71,16 @@ long wordcount(const char* fileName)
     pthread_create(&pmThread, NULL, progress_monitor, (void *) &progressStatus);    // Creates the new thread pmThread which will use the progress_monitor function with the address of the progressStatus struct as the argument
 
     char c;
-    int noDouble = 1;
+    int noDouble = 1; // Variable used to detect consecutive whitespaces
     while (check.get(c)) {  // Reading one character at a time
         CurrentStatus++;    // Incrementing the number of bytes we have read thus far
-        if (isspace(c)) {
+        if (isspace(c)) { 
             wordCount++;
             noDouble++;
         }
-        else if(noDouble >= 1)
+        else if(noDouble >= 1) // Subtracts noDouble counter by 1 with a lower bound of 0 everytime a non-whitespace is encountered
             noDouble--;
-        if (noDouble == 2) 
+        if (noDouble == 2) // The 2 spaces happen side by side, the wordcount is subtracted and the counter is reset back to 1
         {
             wordCount--;
             noDouble--;
